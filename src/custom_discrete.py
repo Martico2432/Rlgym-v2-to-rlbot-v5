@@ -22,8 +22,8 @@ class DiscreteFF(nn.Module):
         layers = [nn.Linear(input_shape, layer_sizes[0]), nn.ReLU()]
         prev_size = layer_sizes[0]
         for size in layer_sizes[1:]:
-            layers.append(nn.Linear(prev_size, size)) #!MODIFYED set back to normal
-            layers.append(nn.LeakyReLU(0.015))
+            layers.append(nn.Linear(prev_size, size))
+            layers.append(nn.ReLU())
             prev_size = size
 
         layers.append(nn.Linear(layer_sizes[-1], n_actions))
