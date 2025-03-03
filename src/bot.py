@@ -144,16 +144,15 @@ class MyBot(Bot):
 
             # Pass the observation through the model to get the action
             #//print(f"Model action: {parsed_actions}")
+        else:
+            return self.prev_control
 
         #print(self.ticks)
 
         try:
             self.update_controls(parsed_actions)
-        except UnboundLocalError:
+        except:
             return self.prev_control
-
-
-
 
         self.prev_control = self.controls
 
