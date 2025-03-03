@@ -1,4 +1,4 @@
-# RLBotRlGymRlGymPythonExample
+# RLBotRlGymPythonExample
 
 Example of a Python bot using the RLBot framework
 
