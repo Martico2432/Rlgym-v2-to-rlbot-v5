@@ -15,4 +15,5 @@ Wiki: [VirxEC/python-interface/wiki](https://github.com/VirxEC/python-interface/
 ## Changing the bot
 
 - Send the POLICY.pt directly into src/ folder
+- Modify the action parser and obs to match yours
 
