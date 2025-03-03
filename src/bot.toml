@@ -1,0 +1,38 @@
+[settings]
+# The name that will be displayed in game
+name = "MicroOctaneClown"
+# Path to loadout config from runner
+loadout_file = "loadout.toml"
+# (OPTIONAL) - what you want the working directory set to
+# This is relative to the location of this file
+# instead of setting to an empty string,
+# this value can be removed from the file
+root_dir = ""
+# The command RLBot will call to start your bot on Windows
+# ex: "bot.exe" for compiled bots, or "python bot.py" if you don't want to freeze your python bot
+run_command = "python bot.py"
+# The command RLBot will call to start your bot on linux
+# If this isn't set, RLBot may attempt to run the Windows command under Wine
+run_command_linux = "../venv/bin/python bot.py"
+# This must be a unqiue identifier for your bot
+# recommended format is "author/botname"
+agent_id = "martico2432/microocctaneclown"
+
+# These values are optional but useful metadata for helper programs
+[details]
+# Short description of the bot
+description = """
+An rlgym v2 bot that has less than 24k params
+"""
+# Fun fact about the bot
+fun_fact = "It can touch the ball"
+# Link to github repository
+source_link = ""
+# Name of the bot's creator/developer
+developer = "Martico2432"
+# Programming language
+language = "Python"
+# ALL POSSIBLE TAGS: 1v1, teamplay, goalie, hoops, dropshot, snow-day, spike-rush, heatseaker, memebot
+# NOTE: Only add the goalie tag if your bot only plays as a goalie; this directly contrasts with the teamplay tag!
+# NOTE: Only add a tag for a special game mode if you bot properly supports it
+tags = ["1v1", "memebot"]

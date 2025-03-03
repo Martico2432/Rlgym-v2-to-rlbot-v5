@@ -1,0 +1,4 @@
+rlbot>=2.0.0.beta
+torch==1.9.1
+
+pip
