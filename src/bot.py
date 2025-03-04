@@ -40,11 +40,6 @@ def model_info_from_dict(loaded_dict):
 model_path = 'PPO_POLICY.pt'
 
 
-
-
-
-
-
 class MyBot(Bot):
     active_sequence: Sequence | None = None
 
@@ -54,12 +49,11 @@ class MyBot(Bot):
 
         self.device = torch.device("cpu")
 
-        cur_dir = os.path.dirname(os.path.realpath(__file__))
 
         state_dict = torch.load(model_path, map_location=torch.device('cpu'))
         input_amount, action_amount, layer_sizes = model_info_from_dict(state_dict)
         self.policy = DiscreteFF(input_amount, action_amount, layer_sizes, self.device)
-        self.policy.load_state_dict(torch.load(os.path.join(cur_dir, "PPO_POLICY.pt"), map_location=self.device))
+        self.policy.load_state_dict(torch.load(model_path, map_location=self.device))
         torch.set_num_threads(1)
 
 
