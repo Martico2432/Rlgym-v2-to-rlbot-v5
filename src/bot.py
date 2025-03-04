@@ -44,14 +44,15 @@ class MyBot(Bot):
     active_sequence: Sequence | None = None
 
     def initialize(self):
-        self.deterministic = False
-        # Set up information about the boost pads now that the game is active and the info is available
+        self.deterministic = False #NOTE: Set to True if you want to use deterministic actions, False for stochastic
 
         self.device = torch.device("cpu")
 
-
+        # Get the bot data from model, so no need to modfify anything here
         state_dict = torch.load(model_path, map_location=torch.device('cpu'))
         input_amount, action_amount, layer_sizes = model_info_from_dict(state_dict)
+
+        # Make the policy
         self.policy = DiscreteFF(input_amount, action_amount, layer_sizes, self.device)
         self.policy.load_state_dict(torch.load(model_path, map_location=self.device))
         torch.set_num_threads(1)
@@ -121,7 +122,11 @@ class MyBot(Bot):
 
             with torch.no_grad():
                 action_idx, probs = self.policy.get_action(obs_tensor, deterministic=self.deterministic)
-                   
+                #print(f"Action idx: {action_idx}")
+
+                if self.deterministic == True:
+                    # If it's false, we should place it inside a tensor
+                    action_idx = torch.tensor([action_idx], device=self.device)
 
 
             parsed_actions = self.action_parser.parse_actions(actions={self.spawn_id: action_idx}, state=self.game_state, shared_info={"sus": "sus"}).get(self.spawn_id)
