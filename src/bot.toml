@@ -16,7 +16,7 @@ run_command = "python bot.py"
 run_command_linux = "../venv/bin/python bot.py"
 # This must be a unqiue identifier for your bot
 # recommended format is "author/botname"
-agent_id = "martico2432/microocctaneclown"
+agent_id = "martico2432/microoctaneclown"
 
 # These values are optional but useful metadata for helper programs
 [details]

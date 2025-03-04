@@ -16,6 +16,7 @@ from rlgym_compat import common_values
 import numpy as np
 
 from rlgym_compat import GameState
+import os
 
 def model_info_from_dict(loaded_dict):
     state_dict = OrderedDict(loaded_dict)
@@ -34,23 +35,6 @@ def model_info_from_dict(loaded_dict):
 
     return inputs, outputs, layer_sizes
 
-def load_model(model_path):
-    state_dict = torch.load(model_path, map_location=torch.device('cpu'))
-    input_amount, action_amount, layer_sizes = model_info_from_dict(state_dict)
-    device = torch.device("cpu")
-    print(f"Using device: {device}")
-    policy = DiscreteFF(input_amount, action_amount, layer_sizes, device)
-
-    new_state_dict = {}
-    for key, value in state_dict.items():
-        if key in policy.state_dict() and policy.state_dict()[key].shape == value.shape:
-            new_state_dict[key] = value
-        else:
-            print(f"Skipping {key} due to shape mismatch: {value.shape} vs {policy.state_dict()[key].shape}")
-
-    policy.load_state_dict(new_state_dict, strict=False)
-    policy.eval()
-    return policy, device, input_amount
 
 
 model_path = 'PPO_POLICY.pt'
@@ -65,12 +49,18 @@ class MyBot(Bot):
     active_sequence: Sequence | None = None
 
     def initialize(self):
+        self.deterministic = False
         # Set up information about the boost pads now that the game is active and the info is available
-        best_model, device, input_amount = load_model(model_path)
 
-        self.model = best_model
-        self.input_amount = input_amount
-        self.device = device
+        self.device = torch.device("cpu")
+
+        cur_dir = os.path.dirname(os.path.realpath(__file__))
+
+        state_dict = torch.load(model_path, map_location=torch.device('cpu'))
+        input_amount, action_amount, layer_sizes = model_info_from_dict(state_dict)
+        self.policy = DiscreteFF(input_amount, action_amount, layer_sizes, self.device)
+        self.policy.load_state_dict(torch.load(os.path.join(cur_dir, "PPO_POLICY.pt"), map_location=self.device))
+        torch.set_num_threads(1)
 
 
         action_parser = MinimalistLookupTableAction()
@@ -134,16 +124,24 @@ class MyBot(Bot):
             obs = np.asarray(obs).flatten()
             #print(f"Obs flattened: {obs}")
             obs_tensor = torch.tensor(np.array(obs, dtype=np.float32), dtype=torch.float32, device=self.device)
-            #print(len(obs_tensor))
-            model_actions = self.model.get_output(obs_tensor).detach().cpu().numpy()
-            # Set model acrions to shape 1
-            model_actions = np.argmax(model_actions).reshape(1)
+
+            with torch.no_grad():
+                action_idx, probs = self.policy.get_action(obs_tensor, deterministic=self.deterministic)
+                   
 
 
-            parsed_actions = self.action_parser.parse_actions(actions={self.spawn_id: model_actions}, state=self.game_state, shared_info={}).get(self.spawn_id)[0]
+            parsed_actions = self.action_parser.parse_actions(actions={self.spawn_id: action_idx}, state=self.game_state, shared_info={"sus": "sus"}).get(self.spawn_id)
+            
+            if len(parsed_actions.shape) == 2:
+                if parsed_actions.shape[0] == 1:
+                    parsed_actions = parsed_actions[0]
+		
+            if len(parsed_actions.shape) != 1:
+                raise Exception("Invalid action:", parsed_actions)
 
-            # Pass the observation through the model to get the action
+
             #//print(f"Model action: {parsed_actions}")
+
         else:
             return self.prev_control
 
