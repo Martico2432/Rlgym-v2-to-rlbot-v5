@@ -121,3 +121,6 @@ necto/
 
 # Old model folder
 src_bot_old_version/
+
+# Testing folder
+src_test/

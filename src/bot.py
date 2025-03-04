@@ -94,7 +94,9 @@ class MyBot(Bot):
         # Keep our boost pad info updated with which pads are currently active
         if len(packet.balls) == 0:
             # If there are no balls current in the game (likely due to being in a replay), skip this tick.
-            return ControllerState()
+            # Just use 5 random actions -1 to 1 and after that 3 random 0 or 1
+            # Do a celebration :D
+            return ControllerState(throttle=np.random.uniform(-1, 1), steer=np.random.uniform(-1, 1), pitch=np.random.uniform(-1, 1), yaw=np.random.uniform(-1, 1), roll=np.random.uniform(-1, 1), jump=np.random.choice([True, False]), boost=np.random.choice([True, False]), handbrake=np.random.choice([True, False]))
         # we can now assume there's at least one ball in the match
 
         # Get the model and use it to predict the next action using 

@@ -16,4 +16,3 @@ Wiki: [VirxEC/python-interface/wiki](https://github.com/VirxEC/python-interface/
 
 - Send the POLICY.pt directly into src/ folder
 - Modify the action parser and obs to match yours
-- Modify custom_discrete `layers.append(nn.LeakyReLU(0.015))` to `layers.append(nn.ReLU())`
