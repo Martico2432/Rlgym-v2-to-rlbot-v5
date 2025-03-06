@@ -18,6 +18,7 @@ import numpy as np
 from rlgym_compat import GameState
 import os
 
+import colorama
 def model_info_from_dict(loaded_dict):
     state_dict = OrderedDict(loaded_dict)
 
@@ -49,6 +50,8 @@ class MyBot(Bot):
         self.device = torch.device("cpu")
 
         # Get the bot data from model, so no need to modfify anything here
+        # Print a waring in Yellow taht says to ignore the following warning
+        print(colorama.Fore.YELLOW + "WARNING: The following warning is expected and can be ignored")
         model_file = torch.load(model_path, map_location=torch.device('cpu'))
         input_amount, action_amount, layer_sizes = model_info_from_dict(model_file)
 
