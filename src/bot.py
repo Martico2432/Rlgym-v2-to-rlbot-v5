@@ -49,12 +49,12 @@ class MyBot(Bot):
         self.device = torch.device("cpu")
 
         # Get the bot data from model, so no need to modfify anything here
-        state_dict = torch.load(model_path, map_location=torch.device('cpu'))
-        input_amount, action_amount, layer_sizes = model_info_from_dict(state_dict)
+        model_file = torch.load(model_path, map_location=torch.device('cpu'))
+        input_amount, action_amount, layer_sizes = model_info_from_dict(model_file)
 
         # Make the policy
         self.policy = DiscreteFF(input_amount, action_amount, layer_sizes, self.device)
-        self.policy.load_state_dict(torch.load(model_path, map_location=self.device))
+        self.policy.load_state_dict(model_file)
         torch.set_num_threads(1)
 
 
