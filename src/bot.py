@@ -1,4 +1,4 @@
-from rlbot.flat import BallAnchor, ControllerState, GamePacket
+from rlbot.flat import BallAnchor, ControllerState, GamePacket, MatchPhase
 from rlbot.managers import Bot
 
 from util.ball_prediction_analysis import find_slice_at_time
@@ -80,6 +80,7 @@ class MyBot(Bot):
         self.controls = ControllerState()
         self.obs = Obs
         self.action_parser = action_parser
+        self.sent_more_than_one_ball_warning = False
 
     def get_output(self, packet: GamePacket) -> ControllerState:
         """
@@ -94,13 +95,16 @@ class MyBot(Bot):
         self.ticks += ticks_elapsed
 
 
-        # Keep our boost pad info updated with which pads are currently active
-        if len(packet.balls) == 0:
-            # If there are no balls current in the game (likely due to being in a replay), skip this tick.
+        if len(packet.balls) == 0 or packet.match_info.match_phase == MatchPhase.Ended:
+            # If there are no balls current in the game (likely due to being in a replay) or game alredy ended, random movements.
             # Just use 5 random actions -1 to 1 and after that 3 random 0 or 1
             # Do a celebration :D
             return ControllerState(throttle=np.random.uniform(-1, 1), steer=np.random.uniform(-1, 1), pitch=np.random.uniform(-1, 1), yaw=np.random.uniform(-1, 1), roll=np.random.uniform(-1, 1), jump=np.random.choice([True, False]), boost=np.random.choice([True, False]), handbrake=np.random.choice([True, False]))
         # we can now assume there's at least one ball in the match
+
+        if len(packet.balls) > 1 and self.sent_more_than_one_ball_warning == False:
+            print(colorama.Fore.RED + "WARNING: More than one ball detected. This is unexpected and may cause issues.")
+            self.sent_more_than_one_ball_warning = True
 
         # Get the model and use it to predict the next action using 
         
