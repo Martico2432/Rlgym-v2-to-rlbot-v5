@@ -1,24 +1,22 @@
+import os
+import numpy as np
+import torch
 from rlbot.flat import BallAnchor, ControllerState, GamePacket, MatchPhase
 from rlbot.managers import Bot
-
-from util.ball_prediction_analysis import find_slice_at_time
-from util.boost_pad_tracker import BoostPadTracker
-from util.drive import steer_toward_target
-from util.sequence import ControlStep, Sequence
-from util.vec import Vec3
-import torch
-
-from custom_discrete import DiscreteFF
+from rlgym_compat import GameState, common_values
 from collections import OrderedDict
+import colorama
+
+
+# Your imports here
 from act import MinimalistLookupTableAction
 from obs import MinimalistRelativeDefaultObs
-from rlgym_compat import common_values
-import numpy as np
+from custom_discrete import DiscreteFF
 
-from rlgym_compat import GameState
-import os
 
-import colorama
+model_path = 'PPO_POLICY.pt'
+
+
 def model_info_from_dict(loaded_dict):
     state_dict = OrderedDict(loaded_dict)
 
@@ -38,21 +36,20 @@ def model_info_from_dict(loaded_dict):
 
 
 
-model_path = 'PPO_POLICY.pt'
+
 
 
 class MyBot(Bot):
-    active_sequence: Sequence | None = None
 
     def initialize(self):
-        self.deterministic = False #NOTE: Set to True if you want to use deterministic actions, False for stochastic
-
-        self.device = torch.device("cpu")
+        self.deterministic = False #NOTE: Set to True if you want to use deterministic actions, default is False
+        self.ticks = self.tick_skip = 8 #NOTE: Set the amount of ticks to skip, default is 8
+        self.device = torch.device("cpu") #NOTE: Set the device to use, default is cpu
 
         # Get the bot data from model, so no need to modfify anything here
-        # Print a waring in Yellow taht says to ignore the following warning
+        # Print a waring in Yellow that says to ignore the following warning
         print(colorama.Fore.YELLOW + "WARNING: The following warning is expected and can be ignored")
-        model_file = torch.load(model_path, map_location=torch.device('cpu'))
+        model_file = torch.load(model_path, map_location=self.device)
         input_amount, action_amount, layer_sizes = model_info_from_dict(model_file)
 
         # Make the policy
@@ -60,9 +57,9 @@ class MyBot(Bot):
         self.policy.load_state_dict(model_file)
         torch.set_num_threads(1)
 
-
+        #! update this with your action and obs
         action_parser = MinimalistLookupTableAction()
-        Obs = MinimalistRelativeDefaultObs(#zero_padding=3, #!!!!! WARNING IMPorTANT change back to 3 after 24k bot and use my advanced
+        Obs = MinimalistRelativeDefaultObs(
                              pos_coef=np.asarray([1 / common_values.SIDE_WALL_X, 1 / common_values.BACK_NET_Y, 1 / common_values.CEILING_Z]),
                              ang_coef=1 / np.pi,
                              lin_vel_coef=1 / common_values.CAR_MAX_SPEED,
@@ -70,12 +67,9 @@ class MyBot(Bot):
                              boost_coef=1 / 100.0)
         
 
+        # Some variables that are going to be used
         self.game_state = GameState()
-
         self.prev_time = 0.0
-        self.ticks = tick_skip = 8
-        self.tick_skip = tick_skip
-        self.update_action = True
         self.prev_control = ControllerState()
         self.controls = ControllerState()
         self.obs = Obs
@@ -84,62 +78,63 @@ class MyBot(Bot):
 
     def get_output(self, packet: GamePacket) -> ControllerState:
         """
-        This function will be called by the framework many times per second. This is where you can
-        see the motion of the ball, etc. and return controls to drive your car.
+        This function will be called by the framework many times per second. This is where the bot makes any decisions.
+        And outputs them.
         """
 
+
+        # Calculate the time elapsed since the last frame
         cur_time = packet.match_info.frame_num
         ticks_elapsed = cur_time - self.prev_time
         self.prev_time = cur_time
 
         self.ticks += ticks_elapsed
 
-
+        # Some checks
         if len(packet.balls) == 0 or packet.match_info.match_phase == MatchPhase.Ended:
             # If there are no balls current in the game (likely due to being in a replay) or game alredy ended, random movements.
             # Just use 5 random actions -1 to 1 and after that 3 random 0 or 1
             # Do a celebration :D
             return ControllerState(throttle=np.random.uniform(-1, 1), steer=np.random.uniform(-1, 1), pitch=np.random.uniform(-1, 1), yaw=np.random.uniform(-1, 1), roll=np.random.uniform(-1, 1), jump=np.random.choice([True, False]), boost=np.random.choice([True, False]), handbrake=np.random.choice([True, False]))
-        # we can now assume there's at least one ball in the match
-
         if len(packet.balls) > 1 and self.sent_more_than_one_ball_warning == False:
             print(colorama.Fore.RED + "WARNING: More than one ball detected. This is unexpected and may cause issues.")
             self.sent_more_than_one_ball_warning = True
 
-        # Get the model and use it to predict the next action using 
+        # Get the model and use it to predict the next action using the obs and action parser
         
         if self.ticks >= self.tick_skip - 1:
             self.ticks = 0
 
+            # Get the current game state
             self.game_state = self.game_state.create_compat_game_state(self.field_info)
             self.game_state.update(packet)
-            self.update_action = False
 
-            player_car = self.game_state.cars.get(self.spawn_id)
+            # Get the car ids
             cars_ids = self.game_state.cars.keys()
-            #print(f"Cars: {cars_ids}")
-            #print(f"Spawn id:{self.spawn_id}")
 			
+            # Build the obs with the ids
             obs = self.obs.build_obs(cars_ids, self.game_state, {"sus": "sus"}) # IF A JUDGE SEES THIS, I AM SORRY. SUS
-            #print(f"Obs: {obs}")
-            #print(f"Obs keys: {obs.keys()}")
+
+            # Get the obs of the current car
             obs = obs[self.spawn_id]
-            #print(f"Obs user: {obs}")
             obs = np.asarray(obs).flatten()
-            #print(f"Obs flattened: {obs}")
             obs_tensor = torch.tensor(np.array(obs, dtype=np.float32), dtype=torch.float32, device=self.device)
 
+
+            # Get the prediction
             with torch.no_grad():
                 action_idx, probs = self.policy.get_action(obs_tensor, deterministic=self.deterministic)
                 #print(f"Action idx: {action_idx}")
 
                 if self.deterministic == True:
-                    # If it's false, we should place it inside a tensor
+                    # If it's true, we should place it inside a tensor
                     action_idx = torch.tensor([action_idx], device=self.device)
 
-
+            # Based on the action, parse it into an array of 8 values
             parsed_actions = self.action_parser.parse_actions(actions={self.spawn_id: action_idx}, state=self.game_state, shared_info={"sus": "sus"}).get(self.spawn_id)
             
+
+            # Check for errors
             if len(parsed_actions.shape) == 2:
                 if parsed_actions.shape[0] == 1:
                     parsed_actions = parsed_actions[0]
@@ -147,25 +142,26 @@ class MyBot(Bot):
             if len(parsed_actions.shape) != 1:
                 raise Exception("Invalid action:", parsed_actions)
 
-
-            #//print(f"Model action: {parsed_actions}")
-
         else:
+            # Still tick skip is not reached, return the previous control
             return self.prev_control
 
-        #print(self.ticks)
-
+        # Update the controls, but if not able to, just return the previous control
         try:
             self.update_controls(parsed_actions)
         except:
             return self.prev_control
-
+        
+        # Save the previous control
         self.prev_control = self.controls
 
         return self.controls
     
 
     def update_controls(self, action):
+        """
+        Based on the action, update the controls
+        """
         actions = []
         for actio in action:
             actions.append(float(actio))
