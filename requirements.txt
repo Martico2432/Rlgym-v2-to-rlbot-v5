@@ -1,5 +1,6 @@
 rlbot>=2.0.0.beta
 torch==2.4.0
+git+https://github.com/JPK314/rlgym-compat.git@rlgymv2-rlbot-v5
 
 pip
 colorama

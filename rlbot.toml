@@ -70,7 +70,7 @@ audio = "Default"
 #skill = "rookie"
 #team = 0
 [[cars]]
-config_file = "src_test/bot.toml"
+config_file = "src/bot.toml"
 team = 0
 
 #[[cars]]
@@ -82,5 +82,5 @@ team = 0
 #team = 0
 
 [[cars]]
-config_file = "src/bot.toml"
+config_file = "src_test/bot.toml"
 team = 1
