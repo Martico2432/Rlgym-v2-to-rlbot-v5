@@ -48,7 +48,7 @@ class MyBot(Bot):
 
         # Get the bot data from model, so no need to modfify anything here
         # Print a waring in Yellow that says to ignore the following warning
-        print(colorama.Fore.YELLOW + "WARNING: The following warning is expected and can be ignored")
+        print(colorama.Fore.YELLOW + "WARNING: The following warning is expected and can be ignored" + colorama.Fore.RESET)
         model_file = torch.load(model_path, map_location=self.device)
         input_amount, action_amount, layer_sizes = model_info_from_dict(model_file)
 

@@ -65,21 +65,21 @@ game_event = "Default"
 # "Default", "Haunted"
 audio = "Default"
 
-#[[cars]]
-#type = "psyonix"
-#skill = "rookie"
-#team = 0
+# [[cars]]
+# type = "psyonix"
+# skill = "rookie"
+# team = 1
 [[cars]]
 config_file = "src/bot.toml"
 team = 0
 
-#[[cars]]
-#config_file = "necto/bot.toml"
-#team = 0
+# [[cars]]
+# config_file = "necto/bot.toml"
+# team = 0
 
-#[[cars]]
-#type = "human"
-#team = 0
+# [[cars]]
+# type = "human"
+# team = 0
 
 [[cars]]
 config_file = "src_test/bot.toml"
