@@ -1,5 +1,5 @@
 rlbot>=2.0.0.beta
-torch==2.4.0
+torch
 git+https://github.com/JPK314/rlgym-compat.git@rlgymv2-rlbot-v5
 
 pip
