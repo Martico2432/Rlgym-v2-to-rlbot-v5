@@ -1,4 +1,4 @@
-rlbot>=2.0.0.beta
+rlbot>=2.0.0b40
 torch
 git+https://github.com/JPK314/rlgym-compat.git@rlgymv2-rlbot-v5
 
