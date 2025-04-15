@@ -13,6 +13,8 @@ from act import MinimalistLookupTableAction
 from obs import MinimalistRelativeDefaultObs
 from custom_discrete import DiscreteFF
 
+from rlgym_compat.sim_extra_info import SimExtraInfo
+
 
 model_path = 'PPO_POLICY.pt'
 
@@ -106,9 +108,10 @@ class MyBot(Bot):
             self.ticks = 0
 
             # Get the current game state
-            self.game_state = self.game_state.create_compat_game_state(self.field_info)
-            self.game_state.update(packet)
-
+            self.extra_info = SimExtraInfo(self.field_info, tick_skip=self.tick_skip)
+            extra_info = self.extra_info.get_extra_info(packet)
+            self.game_state = self.game_state.create_compat_game_state(self.field_info, tick_skip=self.tick_skip)
+            self.game_state.update(packet, extra_info=extra_info)
             # Get the car ids
             cars_ids = self.game_state.cars.keys()
 			

@@ -4,7 +4,6 @@ from typing import Dict
 import RocketSim as rsim
 from rlbot.flat import (
     BallTypeMutator,
-    BoostMutator,
     BoostStrengthMutator,
     DemolishMutator,
     FieldInfo,
@@ -71,19 +70,6 @@ class SimExtraInfo:
                 case _:
                     raise NotImplementedError(mutators.ball_type)
 
-            match mutators.boost:
-                case BoostMutator.NormalBoost:
-                    pass
-                case BoostMutator.UnlimitedBoost:
-                    mutator_config["boost_used_per_second"] = 0
-                    mutator_config["car_spawn_boost_amount"] = 100
-                case BoostMutator.NoBoost:
-                    mutator_config["boost_accel"] = 0
-                    print(
-                        "Warning: No Boost boost option support is an experimental feature"
-                    )
-                case _:
-                    raise NotImplementedError(mutators.boost)
 
             assert (
                 mutators.rumble == RumbleMutator.NoRumble
