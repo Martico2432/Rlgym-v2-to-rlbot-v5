@@ -113,8 +113,17 @@ ENV/
 # RLBot
 RLBotServer*
 
-# Any model
+# Any model for preventing leaks
+# The onnxruntime were added by an AI OMG wow
 *.pt
+*.pth
+*.keras
+*.h5
+*.onnx
+*.onnxruntime
+*.onnxruntime_model
+*.onnxruntime_model_*
+
 
 # Necto folder
 necto/
@@ -124,3 +133,6 @@ src_bot_old_version/
 
 # Testing folder
 src_test/
+
+# Other private folders
+src_24k_v2/
