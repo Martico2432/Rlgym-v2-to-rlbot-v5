@@ -95,11 +95,11 @@ input_restriction = "Default"
 # type = "human"
 # team = 0
 [[cars]]
-config_file = "src/bot.toml"
+config_file = "src_24k_v2/bot.toml"
 team = 0
 
 [[cars]]
-config_file = "src/bot.toml"
+config_file = "src_24k_v2/bot.toml"
 team = 1
 # If RLBot should start this bot automatically with its specified `run_command` or not
 auto_start = true
