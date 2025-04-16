@@ -70,13 +70,15 @@ class MyBot(Bot):
         
 
         # Some variables that are going to be used
-        self.game_state = GameState()
         self.prev_time = 0.0
         self.prev_control = ControllerState()
         self.controls = ControllerState()
         self.obs = Obs
         self.action_parser = action_parser
         self.sent_more_than_one_ball_warning = False
+
+        self.game_state = self.game_state.create_compat_game_state(self.field_info, tick_skip=self.tick_skip)
+        self.extra_info = SimExtraInfo(self.field_info, tick_skip=self.tick_skip)
 
     def get_output(self, packet: GamePacket) -> ControllerState:
         """
@@ -108,9 +110,7 @@ class MyBot(Bot):
             self.ticks = 0
 
             # Get the current game state
-            self.extra_info = SimExtraInfo(self.field_info, tick_skip=self.tick_skip)
             extra_info = self.extra_info.get_extra_info(packet)
-            self.game_state = self.game_state.create_compat_game_state(self.field_info, tick_skip=self.tick_skip)
             self.game_state.update(packet, extra_info=extra_info)
             # Get the car ids
             cars_ids = self.game_state.cars.keys()
@@ -119,7 +119,7 @@ class MyBot(Bot):
             obs = self.obs.build_obs(cars_ids, self.game_state, {"sus": "sus"}) # IF A JUDGE SEES THIS, I AM SORRY. SUS
 
             # Get the obs of the current car
-            obs = obs[self.spawn_id]
+            obs = obs.get(self.spawn_id)
             obs = np.asarray(obs).flatten()
             obs_tensor = torch.tensor(np.array(obs, dtype=np.float32), dtype=torch.float32, device=self.device)
 
