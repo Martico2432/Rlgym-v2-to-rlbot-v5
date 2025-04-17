@@ -1,6 +1,6 @@
 [settings]
 # The name that will be displayed in game
-name = "MicroOctaneClown"
+name = "MicroOctaneClown OLD"
 # Path to loadout config from runner
 loadout_file = "loadout.toml"
 # (OPTIONAL) - what you want the working directory set to
@@ -16,7 +16,7 @@ run_command = "python bot.py"
 run_command_linux = "../venv/bin/python bot.py"
 # This must be a unqiue identifier for your bot
 # recommended format is "author/botname"
-agent_id = "martico2432/microoctaneclown"
+agent_id = "martico2432/microoctaneclownOLD"
 
 # These values are optional but useful metadata for helper programs
 [details]

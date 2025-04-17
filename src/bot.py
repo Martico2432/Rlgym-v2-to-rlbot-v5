@@ -70,6 +70,7 @@ class MyBot(Bot):
         
 
         # Some variables that are going to be used
+        self.game_state = GameState()
         self.prev_time = 0.0
         self.prev_control = ControllerState()
         self.controls = ControllerState()

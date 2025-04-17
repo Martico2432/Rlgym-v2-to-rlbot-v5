@@ -29,7 +29,7 @@ freeplay = false
 
 [mutators]
 # "FiveMinutes", "TenMinutes", "TwentyMinutes", "Unlimited"
-match_length = "FiveMinutes"
+match_length = "Unlimited"
 # "Unlimited", "OneGoal", "ThreeGoals", "FiveGoals", "SevenGoals", "TenGoals", "TwentyGoals", "ThirtyGoals", "FortyGoals", "FiftyGoals", "SixtyGoals", "SeventyGoals", "EightyGoals", "NinetyGoals", "HundredGoals"
 max_score = "Unlimited"
 # "One", "Two", "Four", "Six"
@@ -95,7 +95,7 @@ input_restriction = "Default"
 # type = "human"
 # team = 0
 [[cars]]
-config_file = "src_24k_v2/bot.toml"
+config_file = "src/bot.toml"
 team = 0
 
 
