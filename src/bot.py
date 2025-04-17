@@ -77,7 +77,7 @@ class MyBot(Bot):
         self.action_parser = action_parser
         self.sent_more_than_one_ball_warning = False
 
-        self.game_state = self.game_state.create_compat_game_state(self.field_info, tick_skip=self.tick_skip)
+        
         self.extra_info = SimExtraInfo(self.field_info, tick_skip=self.tick_skip)
 
     def get_output(self, packet: GamePacket) -> ControllerState:
@@ -110,6 +110,7 @@ class MyBot(Bot):
             self.ticks = 0
 
             # Get the current game state
+            self.game_state = self.game_state.create_compat_game_state(self.field_info, tick_skip=self.tick_skip)
             extra_info = self.extra_info.get_extra_info(packet)
             self.game_state.update(packet, extra_info=extra_info)
             # Get the car ids
