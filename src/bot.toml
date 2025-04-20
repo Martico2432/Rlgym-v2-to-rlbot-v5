@@ -1,3 +1,4 @@
+#:schema https://rlbot.org/schemas/agent.json
 [settings]
 # The name that will be displayed in game
 name = "MicroOctaneClown OLD"

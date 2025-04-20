@@ -117,6 +117,7 @@ RLBotServer*
 # The onnxruntime were added by an AI OMG wow
 *.pt
 *.pth
+*.lt
 *.keras
 *.h5
 *.onnx
@@ -136,3 +137,4 @@ src_test/
 
 # Other private folders
 src_24k_v2/
+src_cpp/

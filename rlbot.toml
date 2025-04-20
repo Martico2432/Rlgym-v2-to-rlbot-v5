@@ -1,8 +1,9 @@
+#:schema https://rlbot.org/schemas/match.json
 [rlbot]
 # use this along with launcher = "custom"
 # launcher_arg = "legendary"
 # "Steam", "Epic", "Custom", "NoLaunch"
-launcher = "epic"
+launcher = "Epic"
 # Should RLBot start the bot processes automatically, or will a separate script start them
 auto_start_agents = true
 # Should RLBot wait for the bot processes to start before starting the match
@@ -95,12 +96,12 @@ input_restriction = "Default"
 # type = "human"
 # team = 0
 [[cars]]
-config_file = "src/bot.toml"
+config_file = "src_cpp/bot.toml"
 team = 0
 
 
 [[cars]]
-config_file = "src_24k_v2/bot.toml"
+config_file = "src_cpp/bot.toml"
 team = 1
 
 
