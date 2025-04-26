@@ -10,7 +10,10 @@ Wiki: [VirxEC/python-interface/wiki](https://github.com/VirxEC/python-interface/
    - `pip install -r requirements.txt`
 1. Download `RLBotServer.exe` and place it in the root directory.
    - <https://github.com/RLBot/core>
+   - **_Maybe you have to get an older version, but it should be updated up to 2 days after_**
 1. Start a match with `python run.py`.
+
+
 
 ## Changing the bot
 
