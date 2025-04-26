@@ -100,10 +100,18 @@ config_file = "src_cpp/bot.toml"
 team = 0
 
 
-[[cars]]
-config_file = "src_cpp/bot.toml"
-team = 1
+# [[cars]]
+# config_file = "src_cpp/bot.toml"
+# team = 1
 
+# [[cars]]
+# type="Human"
+# team = 1
+
+[[cars]]
+type = "Psyonix"
+skill = "Rookie"
+team = 1
 
 # If RLBot should start this bot automatically with its specified `run_command` or not
 auto_start = true

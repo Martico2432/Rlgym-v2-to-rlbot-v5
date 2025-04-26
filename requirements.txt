@@ -1,4 +1,4 @@
-rlbot>=2.0.0b40
+rlbot>=2.0.0b41
 torch
 #git+https://github.com/JPK314/rlgym-compat.git@rlgymv2-rlbot-v5 # REMOVED BECAUSE THE FOLDER IS UPDATED FOR RLBOT NEWER VERSION, ONCE RLGYM_COMPAT IS UPDATED I'LL REMOVE THIS COMMENT, ejem @JPK314
 

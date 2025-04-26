@@ -112,6 +112,7 @@ ENV/
 
 # RLBot
 RLBotServer*
+rlbotgui*
 
 # Any model for preventing leaks
 # The onnxruntime were added by an AI OMG wow
@@ -138,3 +139,14 @@ src_test/
 # Other private folders
 src_24k_v2/
 src_cpp/
+*.zip
+*.tar.
+
+
+
+# This is here because I was bored and decided to add some random stuff
+ripple/
+opti/
+seer/
+pivot/
+# This is here because I was bored and decided to add some random stuff, not because I want to hide it
