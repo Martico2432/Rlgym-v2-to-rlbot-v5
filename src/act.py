@@ -8,7 +8,7 @@ from rlgym_compat.game_state import GameState
 
 
 
-class MinimalistLookupTableAction(ActionParser[AgentID, np.ndarray, np.ndarray, GameState, Tuple[str, int]]):
+class LookupTableAction(ActionParser[AgentID, np.ndarray, np.ndarray, GameState, Tuple[str, int]]):
     """
     World-famous discrete action parser which uses a lookup table to reduce the number of possible actions from 1944 to 90
     """
@@ -34,7 +34,6 @@ class MinimalistLookupTableAction(ActionParser[AgentID, np.ndarray, np.ndarray, 
 
             parsed_actions[agent] = self._lookup_table[action]
 
-
         return parsed_actions
 
     @staticmethod
@@ -44,19 +43,22 @@ class MinimalistLookupTableAction(ActionParser[AgentID, np.ndarray, np.ndarray, 
         for throttle in (-1, 0, 1):
             for steer in (-1, 0, 1):
                 for boost in (0, 1):
-                    if boost == 1 and throttle != 1: #! No handbreak
-                        continue
-                    actions.append([throttle or boost, steer, 0, steer, 0, 0, boost, 0])
+                    for handbrake in (0, 1):
+                        if boost == 1 and throttle != 1:
+                            continue
+                        actions.append([throttle or boost, steer, 0, steer, 0, 0, boost, handbrake])
         # Aerial
         for pitch in (-1, 0, 1):
             for yaw in (-1, 0, 1):
-                for jump in (0, 1): #! NO ROLL
-                    for boost in (0, 1):
-                        if jump == 1 and yaw != 0:  # Only need roll for sideflip
-                            continue
-                        if pitch == 0 == jump == 0:  # Duplicate with ground
-                            continue
-                        #! No handbrake on aerials
-                        actions.append([boost, yaw, pitch, yaw, 0, jump, boost, 0])
+                for roll in (-1, 0, 1):
+                    for jump in (0, 1):
+                        for boost in (0, 1):
+                            if jump == 1 and yaw != 0:  # Only need roll for sideflip
+                                continue
+                            if pitch == roll == jump == 0:  # Duplicate with ground
+                                continue
+                            # Enable handbrake for potential wavedashes
+                            handbrake = jump == 1 and (pitch != 0 or yaw != 0 or roll != 0)
+                            actions.append([boost, yaw, pitch, yaw, roll, jump, boost, handbrake])
 
         return np.array(actions)

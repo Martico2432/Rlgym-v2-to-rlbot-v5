@@ -9,8 +9,8 @@ import colorama
 
 
 # Your imports here
-from act import MinimalistLookupTableAction
-from obs import MinimalistRelativeDefaultObs
+from act import LookupTableAction
+from obs import DefaultObs
 from custom_discrete import DiscreteFF
 
 from rlgym_compat.sim_extra_info import SimExtraInfo
@@ -60,8 +60,8 @@ class MyBot(Bot):
         torch.set_num_threads(1)
 
         #! update this with your action and obs
-        action_parser = MinimalistLookupTableAction()
-        Obs = MinimalistRelativeDefaultObs(
+        action_parser = LookupTableAction()
+        Obs = DefaultObs(
                              pos_coef=np.asarray([1 / common_values.SIDE_WALL_X, 1 / common_values.BACK_NET_Y, 1 / common_values.CEILING_Z]),
                              ang_coef=1 / np.pi,
                              lin_vel_coef=1 / common_values.CAR_MAX_SPEED,
