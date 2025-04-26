@@ -1,7 +1,7 @@
 #:schema https://rlbot.org/schemas/agent.json
 [settings]
 # The name that will be displayed in game
-name = "MicroOctaneClown OLD"
+name = "RLGym v2 Bot"
 # Path to loadout config from runner
 loadout_file = "loadout.toml"
 # (OPTIONAL) - what you want the working directory set to
@@ -17,23 +17,23 @@ run_command = "python bot.py"
 run_command_linux = "../venv/bin/python bot.py"
 # This must be a unqiue identifier for your bot
 # recommended format is "author/botname"
-agent_id = "martico2432/microoctaneclownOLD"
+agent_id = "rlgym_and_rlbot_comunity/rlgymv2exaplebot"
 
 # These values are optional but useful metadata for helper programs
 [details]
 # Short description of the bot
 description = """
-An rlgym v2 bot that has less than 24k params
+An rlgym v2 bot that work in rlbot v5
 """
 # Fun fact about the bot
-fun_fact = "It can touch the ball"
+fun_fact = "Based on Zealan's implementation for rlgym v1 and rlbot v4"
 # Link to github repository
-source_link = ""
+source_link = "https://github.com/Martico2432/Rlgym-v2-to-rlbot-v5"
 # Name of the bot's creator/developer
-developer = "Martico2432"
+developer = "TheCommunity"
 # Programming language
 language = "Python"
 # ALL POSSIBLE TAGS: 1v1, teamplay, goalie, hoops, dropshot, snow-day, spike-rush, heatseaker, memebot
 # NOTE: Only add the goalie tag if your bot only plays as a goalie; this directly contrasts with the teamplay tag!
 # NOTE: Only add a tag for a special game mode if you bot properly supports it
-tags = ["1v1", "memebot"]
+tags = []
