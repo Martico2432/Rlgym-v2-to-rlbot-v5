@@ -106,6 +106,7 @@ class Car:
             not self.has_double_jumped
             and not self.has_flipped
             and self.air_time_since_jump < DOUBLEJUMP_MAX_DELAY
+            and not self.on_ground
         )
 
     @property
