@@ -101,6 +101,7 @@ class Car:
         return self.supersonic_time > 0
 
     @property
+    # Updated because Eastvillage found it was wrong
     def can_flip(self) -> bool:
         return (
             not self.has_double_jumped
