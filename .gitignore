@@ -139,6 +139,9 @@ src_test/
 # Other private folders
 src_24k_v2/
 src_cpp/
+src_cpp_24k_bot/
+src_cpp_24k_bot_copy/
+src_patata_chips/
 *.zip
 *.tar.
 

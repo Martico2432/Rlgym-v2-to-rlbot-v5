@@ -80,6 +80,7 @@ class MyBot(Bot):
 
         
         self.extra_info = SimExtraInfo(self.field_info, tick_skip=self.tick_skip)
+        self.game_state = self.game_state.create_compat_game_state(self.field_info, tick_skip=self.tick_skip)
 
     def get_output(self, packet: GamePacket) -> ControllerState:
         """
@@ -107,13 +108,12 @@ class MyBot(Bot):
 
         # Get the model and use it to predict the next action using the obs and action parser
         
+        extra_info = self.extra_info.get_extra_info(packet)
+        self.game_state.update(packet, extra_info=extra_info)
+        
         if self.ticks >= self.tick_skip - 1:
             self.ticks = 0
 
-            # Get the current game state
-            self.game_state = self.game_state.create_compat_game_state(self.field_info, tick_skip=self.tick_skip)
-            extra_info = self.extra_info.get_extra_info(packet)
-            self.game_state.update(packet, extra_info=extra_info)
             # Get the car ids
             cars_ids = self.game_state.cars.keys()
 			

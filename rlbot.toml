@@ -96,7 +96,7 @@ input_restriction = "Default"
 # type = "human"
 # team = 0
 [[cars]]
-config_file = "src_cpp/bot.toml"
+config_file = "src/bot.toml"
 team = 0
 
 
