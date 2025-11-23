@@ -14,10 +14,10 @@ root_dir = ""
 run_command = "python bot.py"
 # The command RLBot will call to start your bot on linux
 # If this isn't set, RLBot may attempt to run the Windows command under Wine
-run_command_linux = "../venv/bin/python bot.py"
+run_command_linux = "python bot.py"
 # This must be a unqiue identifier for your bot
-# recommended format is "author/botname"
-agent_id = "rlgym_and_rlbot_comunity/rlgymv2exaplebot"
+# recommended format is "author/botname/version"
+agent_id = "rlgym_and_rlbot_comunity/rlgymv2exaplebot/v0.1"
 
 # These values are optional but useful metadata for helper programs
 [details]
@@ -26,13 +26,13 @@ description = """
 An rlgym v2 bot that work in rlbot v5
 """
 # Fun fact about the bot
-fun_fact = "Based on Zealan's implementation for rlgym v1 and rlbot v4"
+fun_fact = ""
 # Link to github repository
 source_link = "https://github.com/Martico2432/Rlgym-v2-to-rlbot-v5"
 # Name of the bot's creator/developer
 developer = "TheCommunity"
 # Programming language
-language = "Python"
+language = "Python/RLGym"
 # ALL POSSIBLE TAGS: 1v1, teamplay, goalie, hoops, dropshot, snow-day, spike-rush, heatseaker, memebot
 # NOTE: Only add the goalie tag if your bot only plays as a goalie; this directly contrasts with the teamplay tag!
 # NOTE: Only add a tag for a special game mode if you bot properly supports it

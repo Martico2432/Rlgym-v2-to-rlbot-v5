@@ -5,13 +5,12 @@ from rlbot.flat import BallAnchor, ControllerState, GamePacket, MatchPhase
 from rlbot.managers import Bot
 from rlgym_compat import GameState, common_values
 from collections import OrderedDict
-import colorama
 
 
 # Your imports here
 from act import LookupTableAction
 from obs import DefaultObs
-from custom_discrete import DiscreteFF
+from discrete import DiscreteFF
 
 from rlgym_compat.sim_extra_info import SimExtraInfo
 
@@ -37,10 +36,6 @@ def model_info_from_dict(loaded_dict):
     return inputs, outputs, layer_sizes
 
 
-
-
-
-
 class MyBot(Bot):
 
     def initialize(self):
@@ -49,8 +44,6 @@ class MyBot(Bot):
         self.device = torch.device("cpu") #NOTE: Set the device to use, default is cpu
 
         # Get the bot data from model, so no need to modfify anything here
-        # Print a waring in Yellow that says to ignore the following warning
-        print(colorama.Fore.YELLOW + "WARNING: The following warning is expected and can be ignored" + colorama.Fore.RESET)
         model_file = torch.load(model_path, map_location=self.device)
         input_amount, action_amount, layer_sizes = model_info_from_dict(model_file)
 
@@ -80,14 +73,12 @@ class MyBot(Bot):
 
         
         self.extra_info = SimExtraInfo(self.field_info, tick_skip=self.tick_skip)
-        self.game_state = self.game_state.create_compat_game_state(self.field_info, tick_skip=self.tick_skip)
+        self.game_state = self.game_state.create_compat_game_state(self.field_info)
 
     def get_output(self, packet: GamePacket) -> ControllerState:
         """
         This function will be called by the framework many times per second. This is where the bot makes any decisions.
-        And outputs them.
         """
-
 
         # Calculate the time elapsed since the last frame
         cur_time = packet.match_info.frame_num
@@ -118,10 +109,10 @@ class MyBot(Bot):
             cars_ids = self.game_state.cars.keys()
 			
             # Build the obs with the ids
-            obs = self.obs.build_obs(cars_ids, self.game_state, {"sus": "sus"}) # IF A JUDGE SEES THIS, I AM SORRY. SUS
+            obs = self.obs.build_obs(cars_ids, self.game_state, shared_info={})
 
             # Get the obs of the current car
-            obs = obs.get(self.spawn_id)
+            obs = obs.get(self.player_ud)
             obs = np.asarray(obs).flatten()
             obs_tensor = torch.tensor(np.array(obs, dtype=np.float32), dtype=torch.float32, device=self.device)
 
@@ -136,7 +127,7 @@ class MyBot(Bot):
                     action_idx = torch.tensor([action_idx], device=self.device)
 
             # Based on the action, parse it into an array of 8 values
-            parsed_actions = self.action_parser.parse_actions(actions={self.spawn_id: action_idx}, state=self.game_state, shared_info={"sus": "sus"}).get(self.spawn_id)
+            parsed_actions = self.action_parser.parse_actions(actions={self.player_ud: action_idx}, state=self.game_state, shared_info={}).get(self.player_ud)
             
 
             # Check for errors
@@ -185,4 +176,4 @@ if __name__ == "__main__":
     # Connect to RLBot and run
     # Having the agent id here allows for easier development,
     # as otherwise the RLBOT_AGENT_ID environment variable must be set.
-    MyBot("rlbot_community/python_example").run()
+    MyBot("rlgym_and_rlbot_comunity/rlgymv2exaplebot/v0.1").run()
