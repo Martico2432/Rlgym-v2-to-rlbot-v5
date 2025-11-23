@@ -94,7 +94,7 @@ class MyBot(Bot):
             # Do a celebration :D
             return ControllerState(throttle=np.random.uniform(-1, 1), steer=np.random.uniform(-1, 1), pitch=np.random.uniform(-1, 1), yaw=np.random.uniform(-1, 1), roll=np.random.uniform(-1, 1), jump=np.random.choice([True, False]), boost=np.random.choice([True, False]), handbrake=np.random.choice([True, False]))
         if len(packet.balls) > 1 and self.sent_more_than_one_ball_warning == False:
-            print(colorama.Fore.RED + "WARNING: More than one ball detected. This is unexpected and may cause issues.")
+            print("WARNING: More than one ball detected. This is unexpected and may cause issues.")
             self.sent_more_than_one_ball_warning = True
 
         # Get the model and use it to predict the next action using the obs and action parser
@@ -112,7 +112,7 @@ class MyBot(Bot):
             obs = self.obs.build_obs(cars_ids, self.game_state, shared_info={})
 
             # Get the obs of the current car
-            obs = obs.get(self.player_ud)
+            obs = obs.get(self.player_id)
             obs = np.asarray(obs).flatten()
             obs_tensor = torch.tensor(np.array(obs, dtype=np.float32), dtype=torch.float32, device=self.device)
 
@@ -127,7 +127,7 @@ class MyBot(Bot):
                     action_idx = torch.tensor([action_idx], device=self.device)
 
             # Based on the action, parse it into an array of 8 values
-            parsed_actions = self.action_parser.parse_actions(actions={self.player_ud: action_idx}, state=self.game_state, shared_info={}).get(self.player_ud)
+            parsed_actions = self.action_parser.parse_actions(actions={self.player_id: action_idx}, state=self.game_state, shared_info={}).get(self.player_id)
             
 
             # Check for errors
