@@ -125,31 +125,3 @@ rlbotgui*
 *.onnxruntime
 *.onnxruntime_model
 *.onnxruntime_model_*
-
-
-# Necto folder
-necto/
-
-# Old model folder
-src_bot_old_version/
-
-# Testing folder
-src_test/
-
-# Other private folders
-src_24k_v2/
-src_cpp/
-src_cpp_24k_bot/
-src_cpp_24k_bot_copy/
-src_patata_chips/
-*.zip
-*.tar.
-
-
-
-# This is here because I was bored and decided to add some random stuff
-ripple/
-opti/
-seer/
-pivot/
-# This is here because I was bored and decided to add some random stuff, not because I want to hide it
