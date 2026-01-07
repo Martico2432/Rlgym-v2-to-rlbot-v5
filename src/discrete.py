@@ -60,21 +60,3 @@ class DiscreteFF(nn.Module):
         log_prob = torch.log(probs).gather(-1, action)
 
         return action.flatten().cpu(), log_prob.flatten().cpu()
-
-    def get_backprop_data(self, obs, acts):
-        """
-        Function to compute the data necessary for backpropagation.
-        :param obs: Observations to pass through the policy.
-        :param acts: Actions taken by the policy.
-        :return: Action log probs & entropy.
-        """
-        acts = acts.long()
-        probs = self.get_output(obs)
-        probs = probs.view(-1, self.n_actions)
-        probs = torch.clamp(probs, min=1e-11, max=1)
-
-        log_probs = torch.log(probs)
-        action_log_probs = log_probs.gather(-1, acts)
-        entropy = -(log_probs * probs).sum(dim=-1)
-
-        return action_log_probs.to(self.device), entropy.to(self.device).mean()
